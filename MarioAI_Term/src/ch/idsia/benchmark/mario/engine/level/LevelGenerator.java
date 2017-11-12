@@ -94,6 +94,9 @@ private static boolean isLadder = false;
 private static final int ANY_HEIGHT = -1;
 private static final int INFINITE_FLOOR_HEIGHT = Integer.MAX_VALUE;
 
+private static int num_enemies = 0;
+private static final int MAX_ENEMIES = 20;
+
 //Level customization counters
 static Level.objCounters counters = new Level.objCounters();
 
@@ -384,17 +387,18 @@ private static void buildCeiling(int x0, int length)
 
 private static void addEnemy(int x, int y)
 {
-    if (!creaturesRandom.canAdd())
+    if (!creaturesRandom.canAdd() && num_enemies < MAX_ENEMIES)
         return;
 
     int dx = (int) dxRnd.nextGaussian();
     int creatureKind = creaturesRandom.nextCreature();
     if (creatureKind != Sprite.KIND_UNDEF)
     {
-        if (level.setSpriteTemplate(x + dx, y, new SpriteTemplate(creatureKind)))
+        if (level.setSpriteTemplate(x + dx, y, new SpriteTemplate(80)))
             ++counters.creatures;
         else
             creaturesRandom.increaseLastCreature();
+        num_enemies++;
     }
 }
 

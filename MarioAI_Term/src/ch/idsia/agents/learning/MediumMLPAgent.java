@@ -80,6 +80,14 @@ public void mutate()
     mlp.mutate();
 }
 
+public void crossOver(MLP father, MLP mother){
+	mlp.crossOver(father, mother);
+}
+
+public MLP getMLP(){
+	return this.mlp;
+}
+
 public boolean[] getAction()
 {
     byte[][] scene = this.mergedObservation;
@@ -90,7 +98,7 @@ public boolean[] getAction()
     {
         for (int j = -2; j < 3; j++)
         {
-            inputs[which++] = probe(i, j, scene);
+            inputs[which++] = probe(i, j, enemies);
         }
     }
 //        for (int i = -2; i < 3; i++) {
@@ -98,8 +106,9 @@ public boolean[] getAction()
 //                inputs[which++] = probe(i, j, enemies);
 //            }
 //        }
-    inputs[inputs.length - 3] = isMarioOnGround ? 1 : 0;
-    inputs[inputs.length - 2] = isMarioAbleToJump ? 1 : 0;
+    inputs[inputs.length - 4] = isMarioOnGround ? 1 : 0;
+    inputs[inputs.length - 3] = isMarioAbleToJump ? 1 : 0;
+    inputs[inputs.length - 2] = isMarioAbleToShoot ? 1: 0;
     inputs[inputs.length - 1] = 1;
     double[] outputs = mlp.propagate(inputs);
     boolean[] action = new boolean[numberOfOutputs];

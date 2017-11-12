@@ -77,6 +77,9 @@ public int evaluate(Agent agent)
 public static long getEvaluationQuota()
 {return LearningTask.EVALUATION_QUOTA;}
 
+public boolean finishedLevel(){
+	return environment.getMarioStatus() == environment.MARIO_STATUS_WIN;
+}
 public void dumpFitnessEvaluation(float fitness, String fileName)
 {
     try

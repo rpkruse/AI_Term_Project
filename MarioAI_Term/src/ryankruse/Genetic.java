@@ -2,6 +2,7 @@ package ryankruse;
 
 
 import ch.idsia.agents.Agent;
+import ch.idsia.agents.learning.MediumMLPAgent;
 import ch.idsia.agents.learning.SmallMLPAgent;
 import ch.idsia.benchmark.tasks.Task;
 import ch.idsia.evolution.EA;
@@ -97,7 +98,7 @@ public class Genetic implements EA{
 	    System.out.println("Crossed over: " + crossOverCount + " / " + (this.population.length - numElite) + " times");
 	}
 	
-	public SmallMLPAgent mutateAndCross(){
+	public MediumMLPAgent mutateAndCross(){
 		int index1 = (int) (Math.random() * numElite);
 		int index2 = (int) (Math.random() * numElite);
 		
@@ -107,8 +108,8 @@ public class Genetic implements EA{
 		Evolvable father = population[index1].getNewInstance();
 		Evolvable mother = population[index2].getNewInstance();
 		
-		SmallMLPAgent child =  new SmallMLPAgent();
-		child.crossOver(((SmallMLPAgent) father).getMLP(), ((SmallMLPAgent) mother).getMLP());
+		MediumMLPAgent child =  new MediumMLPAgent();
+		child.crossOver(((MediumMLPAgent) father).getMLP(), ((MediumMLPAgent) mother).getMLP());
 		
 		return child;
 	}

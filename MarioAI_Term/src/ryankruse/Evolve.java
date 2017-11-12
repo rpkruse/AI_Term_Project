@@ -13,6 +13,7 @@ import ch.idsia.agents.learning.SmallMLPAgent;
 import ch.idsia.benchmark.mario.engine.GlobalOptions;
 import ch.idsia.benchmark.tasks.BasicTask;
 import ch.idsia.benchmark.tasks.GamePlayTask;
+import ch.idsia.benchmark.tasks.LearningTask;
 import ch.idsia.benchmark.tasks.ProgressTask;
 import ch.idsia.benchmark.tasks.Task;
 import ch.idsia.evolution.Evolvable;
@@ -37,11 +38,11 @@ public class Evolve {
 	    List<Agent> bestAgents = new ArrayList<Agent>();
 	    DecimalFormat df = new DecimalFormat("0000");
 	    
-	    Evolvable initial = new SmallMLPAgent();
-	    SmallMLPAgent best = new SmallMLPAgent();
+	    Evolvable initial = new MediumMLPAgent();
+	    MediumMLPAgent best = new MediumMLPAgent();
 	    
 	    Genetic es;
-	    Task task;
+	    LearningTask task;
 	    double topResult = -1;
 	    double lastFitness = -1;
 	    int difficulty = 0;
@@ -52,6 +53,7 @@ public class Evolve {
     	    System.out.println("New evolve difficulty: " + difficulty);
 
         	options.setLevelDifficulty(difficulty);
+        	options.setLevelType(0);
 
             options.setFPS(GlobalOptions.MaxFPS);
             options.setVisualization(false);
@@ -59,12 +61,12 @@ public class Evolve {
             //Setup the initial population per each level
             if(difficulty == 0 && topResult < 0){ //first level first run
                 options.setAgent((Agent) best);
-                task = new ProgressTask(options);
+                task = new LearningTask(options);
                 es = new Genetic(task, best, populationSize);
             }else{ //nth level first run
             	System.out.println("Expanding on old gen");
             	options.setAgent((Agent) best);
-                task = new ProgressTask(options);
+                task = new LearningTask(options);
                 es = new Genetic(task, bestEntities, bestFitnesses, populationSize);
             }
             
@@ -73,8 +75,7 @@ public class Evolve {
 	            double bestResult = es.getBestFitnesses()[0];
 	            
 	            System.out.println("Generation " + gen + " best " + bestResult);
-	            
-	            options.setVisualization(bestResult > lastFitness || bestResult > 4000);
+	            options.setVisualization(bestResult > lastFitness || task.finishedLevel());
 	            
 	            if(lastFitness == bestResult){
 	            	repeatCount++;
@@ -93,7 +94,7 @@ public class Evolve {
 	            //options.setVisualization(gen % 5 == 0 || bestResult > 4000);
 	            
 	            Agent a = (Agent) es.getBests()[0];
-	            best = (SmallMLPAgent) a;
+	            best = (MediumMLPAgent) a;
 	            a.setName(((Agent) initial).getName() + df.format(gen));
 	            bestAgents.add(a);
 	            
@@ -111,7 +112,7 @@ public class Evolve {
 	            
 	            
 	            
-	            if(result > 4000 && nFinishes >= mustFinish){ //we must complete the level at least 5 times to conin
+	            if(task.finishedLevel() && nFinishes >= mustFinish){ //we must complete the level at least 5 times to conin
 	            	difficulty++;
 	            	break;
 	            }else if(result > 4000){
